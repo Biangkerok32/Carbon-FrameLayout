@@ -3,7 +3,6 @@ package carbon.animation;
 import android.animation.ValueAnimator;
 import android.content.res.ColorStateList;
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.StateSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
@@ -106,8 +105,8 @@ public class AnimatedColorStateList extends ColorStateList {
         colorAnimation.end();
     }
 
-    public static final Parcelable.Creator<AnimatedColorStateList> CREATOR =
-            new Parcelable.Creator<AnimatedColorStateList>() {
+    public static final Creator<AnimatedColorStateList> CREATOR =
+            new Creator<AnimatedColorStateList>() {
                 @Override
                 public AnimatedColorStateList[] newArray(int size) {
                     return new AnimatedColorStateList[size];

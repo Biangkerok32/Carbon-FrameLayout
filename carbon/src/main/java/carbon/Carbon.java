@@ -1,32 +1,22 @@
 package carbon;
 
-import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.graphics.drawable.TintAwareDrawable;
-import android.text.Html;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.MenuInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import java.security.InvalidParameterException;
 
-import carbon.animation.AnimUtils;
 import carbon.animation.AnimatedColorStateList;
-import carbon.animation.AnimatedView;
 import carbon.drawable.AlphaDrawable;
-import carbon.drawable.ColorStateListDrawable;
 import carbon.drawable.DefaultAccentColorStateList;
 import carbon.drawable.DefaultColorStateList;
 import carbon.drawable.DefaultIconColorAccentInverseStateList;
@@ -44,16 +34,12 @@ import carbon.drawable.DefaultTextSecondaryColorInverseStateList;
 import carbon.drawable.DefaultTextSecondaryColorStateList;
 import carbon.drawable.ripple.RippleDrawable;
 import carbon.drawable.ripple.RippleView;
-import carbon.internal.Menu;
 import carbon.shadow.ShadowView;
-import carbon.view.AutoSizeTextView;
 import carbon.view.InsetView;
 import carbon.view.MaxSizeView;
-import carbon.view.StateAnimatorView;
 import carbon.view.StrokeView;
 import carbon.view.TintedView;
 import carbon.view.TouchMarginView;
-import carbon.widget.AutoSizeTextMode;
 
 import static carbon.view.RevealView.MAX_RADIUS;
 
@@ -65,17 +51,7 @@ public class Carbon {
 
     public static PorterDuffXfermode CLEAR_MODE = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
-    public static final int INVALID_INDEX = -1;
-
     private Carbon() {
-    }
-
-    public static float getDip(Context context) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, context.getResources().getDisplayMetrics());
-    }
-
-    public static float getSp(Context context) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 1, context.getResources().getDisplayMetrics());
     }
 
     public static ColorStateList getDefaultColorStateList(View view, TypedArray a, int id) {
@@ -132,18 +108,6 @@ public class Carbon {
         }
 
         return null;
-    }
-
-    public static void initDefaultBackground(View view, TypedArray a, int id) {
-        ColorStateList color = getDefaultColorStateList(view, a, id);
-        if (color != null)
-            view.setBackgroundDrawable(new ColorStateListDrawable(AnimatedColorStateList.fromList(color, animation -> view.postInvalidate())));
-    }
-
-    public static void initDefaultTextColor(TextView view, TypedArray a, int id) {
-        ColorStateList color = getDefaultColorStateList(view, a, id);
-        if (color != null)
-            view.setTextColor(AnimatedColorStateList.fromList(color, animation -> view.postInvalidate()));
     }
 
     public static void initRippleDrawable(RippleView rippleView, TypedArray a, int[] ids) {
@@ -212,77 +176,15 @@ public class Carbon {
         view.setMaximumHeight(height);
     }
 
-    public static void initTint(TintedView view, TypedArray a, int[] ids) {
-        int carbon_tint = ids[0];
-        int carbon_tintMode = ids[1];
-        int carbon_backgroundTint = ids[2];
-        int carbon_backgroundTintMode = ids[3];
-        int carbon_animateColorChanges = ids[4];
-
-        if (a.hasValue(carbon_tint)) {
-            ColorStateList color = getDefaultColorStateList((View) view, a, carbon_tint);
-            if (color == null)
-                color = a.getColorStateList(carbon_tint);
-            if (color != null)
-                view.setTintList(AnimatedColorStateList.fromList(color, animation -> ((View) view).postInvalidate()));
-        }
-        view.setTintMode(TintedView.modes[a.getInt(carbon_tintMode, 1)]);
-
-        if (a.hasValue(carbon_backgroundTint)) {
-            ColorStateList color = getDefaultColorStateList((View) view, a, carbon_backgroundTint);
-            if (color == null)
-                color = a.getColorStateList(carbon_backgroundTint);
-            if (color != null)
-                view.setBackgroundTintList(AnimatedColorStateList.fromList(color, animation -> ((View) view).postInvalidate()));
-        }
-        view.setBackgroundTintMode(TintedView.modes[a.getInt(carbon_backgroundTintMode, 1)]);
-
-        if (a.hasValue(carbon_animateColorChanges))
-            view.setAnimateColorChangesEnabled(a.getBoolean(carbon_animateColorChanges, false));
-    }
-
-    public static void initAnimations(AnimatedView view, TypedArray a, int[] ids) {
-        if (((View) view).isInEditMode())
-            return;
-
-        int carbon_inAnimation = ids[0];
-        if (a.hasValue(carbon_inAnimation)) {
-            TypedValue typedValue = new TypedValue();
-            a.getValue(carbon_inAnimation, typedValue);
-            if (typedValue.resourceId != 0) {
-                view.setInAnimator(AnimatorInflater.loadAnimator(((View) view).getContext(), typedValue.resourceId));
-            } else {
-                view.setInAnimator(AnimUtils.Style.values()[typedValue.data].getInAnimator());
-            }
-        }
-
-        int carbon_outAnimation = ids[1];
-        if (a.hasValue(carbon_outAnimation)) {
-            TypedValue typedValue = new TypedValue();
-            a.getValue(carbon_outAnimation, typedValue);
-            if (typedValue.resourceId != 0) {
-                view.setOutAnimator(AnimatorInflater.loadAnimator(((View) view).getContext(), typedValue.resourceId));
-            } else {
-                view.setOutAnimator(AnimUtils.Style.values()[typedValue.data].getOutAnimator());
-            }
-        }
-    }
-
     public static void initElevation(ShadowView view, TypedArray a, int[] ids) {
         int carbon_elevation = ids[0];
         int carbon_shadowColor = ids[1];
 
         float elevation = a.getDimension(carbon_elevation, 0);
         view.setElevation(elevation);
-        if (elevation > 0)
-            AnimUtils.setupElevationAnimator(((StateAnimatorView) view).getStateAnimator(), view);
+//        if (elevation > 0)
+//            AnimUtils.setupElevationAnimator(((StateAnimatorView) view).getStateAnimator(), view);
         view.setElevationShadowColor(a.getColorStateList(carbon_shadowColor));
-    }
-
-    public static void initHtmlText(android.widget.TextView textView, TypedArray a, int id) {
-        String string = a.getString(id);
-        if (string != null)
-            textView.setText(Html.fromHtml(string));
     }
 
     /**
@@ -350,42 +252,6 @@ public class Carbon {
         strokeView.setStrokeWidth(a.getDimension(carbon_strokeWidth, 0));
     }
 
-    public static void initAutoSizeText(AutoSizeTextView view, TypedArray a, int[] ids) {
-        int carbon_autoSizeText = ids[0];
-        int carbon_autoSizeMinTextSize = ids[1];
-        int carbon_autoSizeMaxTextSize = ids[2];
-        int carbon_autoSizeStepGranularity = ids[3];
-        view.setAutoSizeText(AutoSizeTextMode.values()[a.getInt(carbon_autoSizeText, 0)]);
-        view.setMinTextSize(a.getDimension(carbon_autoSizeMinTextSize, 0));
-        view.setMaxTextSize(a.getDimension(carbon_autoSizeMaxTextSize, 0));
-        view.setAutoSizeStepGranularity(a.getDimension(carbon_autoSizeStepGranularity, 1));
-    }
-
-    public static int getThemeResId(Context context, int attr) {
-        Resources.Theme theme = context.getTheme();
-        TypedValue typedValueAttr = new TypedValue();
-        theme.resolveAttribute(attr, typedValueAttr, true);
-        return typedValueAttr.resourceId;
-    }
-
-    public static Menu getMenu(Context context, int resId) {
-        Context contextWrapper = CarbonContextWrapper.wrap(context);
-        Menu menu = new Menu(contextWrapper);
-        MenuInflater inflater = new MenuInflater(contextWrapper);
-        inflater.inflate(resId, menu);
-        return menu;
-    }
-
-    public static Menu getMenu(Context context, android.view.Menu baseMenu) {
-        Context contextWrapper = CarbonContextWrapper.wrap(context);
-        Menu menu = new Menu(contextWrapper);
-        for (int i = 0; i < baseMenu.size(); i++) {
-            android.view.MenuItem menuItem = baseMenu.getItem(i);
-            menu.add(menuItem.getGroupId(), menuItem.getItemId(), menuItem.getOrder(), menuItem.getTitle()).setIcon(menuItem.getIcon()).setVisible(menuItem.isVisible()).setEnabled(menuItem.isEnabled());
-        }
-        return menu;
-    }
-
     public static float getRevealRadius(View view, int x, int y, float radius) {
         if (radius >= 0)
             return radius;
@@ -395,38 +261,4 @@ public class Carbon {
         int h = Math.max(view.getHeight() - y, y);
         return (float) Math.sqrt(w * w + h * h);
     }
-
-    public static void setTint(Drawable drawable, int tint) {
-        if (drawable instanceof TintAwareDrawable) {
-            ((TintAwareDrawable) drawable).setTint(tint);
-        } else {
-            drawable.setColorFilter(new PorterDuffColorFilter(tint, PorterDuff.Mode.MULTIPLY));
-        }
-    }
-
-    public static void setTintList(Drawable drawable, ColorStateList tint) {
-        if (drawable instanceof TintAwareDrawable) {
-            ((TintAwareDrawable) drawable).setTintList(tint);
-        } else {
-            drawable.setColorFilter(tint == null ? null : new PorterDuffColorFilter(tint.getColorForState(drawable.getState(), tint.getDefaultColor()), PorterDuff.Mode.MULTIPLY));
-        }
-    }
-
-    public static void setTintMode(Drawable drawable, PorterDuff.Mode mode) {
-        if (drawable instanceof TintAwareDrawable)
-            ((TintAwareDrawable) drawable).setTintMode(mode);
-    }
-
-    public static void logReflectionError(Exception e) {
-        StackTraceElement cause = e.getStackTrace()[0];
-        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
-        Log.e("Carbon", "This feature is implemented using reflection. " +
-                "If you see this exception, something in your setup is not standard. " +
-                "Please create an issue on https://github.com/ZieIony/Carbon/issues. " +
-                "Please provide at least the following information: \n" +
-                " - device: " + Build.MANUFACTURER + " " + Build.MODEL + ", API " + Build.VERSION.SDK_INT + "\n" +
-                " - method: " + stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName() + "(...)\n" +
-                " - cause: " + e.getClass().getName() + ": " + e.getMessage() + " at " + cause.getMethodName() + "(" + cause.getFileName() + ":" + cause.getLineNumber() + ")\n", e);
-    }
-
 }

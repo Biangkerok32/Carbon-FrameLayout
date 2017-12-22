@@ -2,7 +2,6 @@ package carbon.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -43,8 +42,6 @@ import java.util.List;
 
 import carbon.Carbon;
 import carbon.R;
-import carbon.animation.AnimatedView;
-import carbon.animation.StateAnimator;
 import carbon.behavior.Behavior;
 import carbon.component.Component;
 import carbon.component.ComponentView;
@@ -63,7 +60,6 @@ import carbon.view.MaxSizeView;
 import carbon.view.RenderingModeView;
 import carbon.view.RevealView;
 import carbon.view.RoundedCornersView;
-import carbon.view.StateAnimatorView;
 import carbon.view.StrokeView;
 import carbon.view.TouchMarginView;
 import carbon.view.TransformationView;
@@ -78,8 +74,6 @@ public class FrameLayout extends android.widget.FrameLayout
         ShadowView,
         RippleView,
         TouchMarginView,
-        StateAnimatorView,
-        AnimatedView,
         InsetView,
         RoundedCornersView,
         StrokeView,
@@ -156,7 +150,6 @@ public class FrameLayout extends android.widget.FrameLayout
 
         Carbon.initRippleDrawable(this, a, rippleIds);
         Carbon.initElevation(this, a, elevationIds);
-        Carbon.initAnimations(this, a, animationIds);
         Carbon.initTouchMargin(this, a, touchMarginIds);
         Carbon.initInset(this, a, insetIds);
         Carbon.initMaxSize(this, a, maxSizeIds);
@@ -789,116 +782,6 @@ public class FrameLayout extends android.widget.FrameLayout
         outRect.right += touchMargin.right;
         outRect.bottom += touchMargin.bottom;
     }
-
-
-    // -------------------------------
-    // state animators
-    // -------------------------------
-
-    private StateAnimator stateAnimator = new StateAnimator(this);
-
-    @Override
-    public StateAnimator getStateAnimator() {
-        return stateAnimator;
-    }
-
-    @Override
-    protected void drawableStateChanged() {
-        super.drawableStateChanged();
-        if (rippleDrawable != null && rippleDrawable.getStyle() != RippleDrawable.Style.Background)
-            rippleDrawable.setState(getDrawableState());
-        if (stateAnimator != null)
-            stateAnimator.setState(getDrawableState());
-    }
-
-
-    // -------------------------------
-    // animations
-    // -------------------------------
-
-    private Animator inAnim = null, outAnim = null;
-    private Animator animator;
-
-    public Animator animateVisibility(final int visibility) {
-        if (visibility == View.VISIBLE && (getVisibility() != View.VISIBLE || animator != null)) {
-            if (animator != null)
-                animator.cancel();
-            if (inAnim != null) {
-                animator = inAnim;
-                animator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator a) {
-                        a.removeListener(this);
-                        animator = null;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator a) {
-                        a.removeListener(this);
-                        animator = null;
-                    }
-                });
-                animator.start();
-            }
-            setVisibility(visibility);
-        } else if (visibility != View.VISIBLE && (getVisibility() == View.VISIBLE || animator != null)) {
-            if (animator != null)
-                animator.cancel();
-            if (outAnim == null) {
-                setVisibility(visibility);
-                return null;
-            }
-            animator = outAnim;
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator a) {
-                    if (((ValueAnimator) a).getAnimatedFraction() == 1)
-                        setVisibility(visibility);
-                    a.removeListener(this);
-                    animator = null;
-                }
-
-                @Override
-                public void onAnimationCancel(Animator a) {
-                    a.removeListener(this);
-                    animator = null;
-                }
-            });
-            animator.start();
-        } else {
-            setVisibility(visibility);
-        }
-        return animator;
-    }
-
-    public Animator getAnimator() {
-        return animator;
-    }
-
-    public Animator getOutAnimator() {
-        return outAnim;
-    }
-
-    public void setOutAnimator(Animator outAnim) {
-        if (this.outAnim != null)
-            this.outAnim.setTarget(null);
-        this.outAnim = outAnim;
-        if (outAnim != null)
-            outAnim.setTarget(this);
-    }
-
-    public Animator getInAnimator() {
-        return inAnim;
-    }
-
-    public void setInAnimator(Animator inAnim) {
-        if (this.inAnim != null)
-            this.inAnim.setTarget(null);
-        this.inAnim = inAnim;
-        if (inAnim != null)
-            inAnim.setTarget(this);
-    }
-
 
     // -------------------------------
     // insets
