@@ -1,78 +1,89 @@
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Carbon-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1491)&nbsp;&nbsp;
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-0.15.0.1-brightgreen.svg)](https://oss.sonatype.org/content/groups/public/tk/zielony/carbon/0.15.0.1/)&nbsp;&nbsp;
-[![Dropbox](https://img.shields.io/badge/Dropbox-Sample%20app-brightgreen.svg)](https://www.dropbox.com/s/wllgpan9cl01mh3/samples.apk?raw=1)
+[![](https://jitpack.io/v/luongvo/Carbon-FrameLayout.svg)](https://jitpack.io/#luongvo/Carbon-FrameLayout)
 
-[![Google+](https://img.shields.io/badge/Google+-Zielony-red.svg)](https://plus.google.com/u/2/109054799904873578131)&nbsp;&nbsp;
-[![Google+](https://img.shields.io/badge/Google+-Carbon-red.svg)](https://plus.google.com/u/1/communities/111973718340428039040)&nbsp;&nbsp;
-[![Twitter](https://img.shields.io/badge/Twitter-GreenMakesApps-blue.svg)](https://twitter.com/GreenMakesApps)
-
-Carbon
+Carbon-FrameLayout
 ================
-Material Design implementation for Android 4.0 and newer. This is not the exact copy of the Lollipop's API and features. It's a custom implementation of the most useful things as shown in the design specification. Carbon tries to:
-
- - make things easier (specify cornerRadius='dp' instead of creating an xml and/or a ViewOutlineProvider)
- - make it all work and look the same on all APIs (like CheckBox's left padding)
- - really backport features (don't use gradients for shadows!)
- - fix Android's everlasting bugs (FrameLayout ignores child's padding when no gravity is set)
-
-### Features
-
-##### Android 4.x
-
- - generated, animated shadows with elevation system
- - the touch ripple
- - rounded corners with content clipping
- - circular reveal
- - theme xml attribute
- - widget and drawable tinting
-
-##### All APIs
-
- - simple to use xml attributes for corners and ripples
- - colored shadows
- - brightness/saturation fade
- - SVG support (with transformations, text, gradients, etc.)
+This is a forked version of [Carbon](https://github.com/ZieIony/Carbon) to provides to simple way 
+to use `FrameLayout` like replacement of (CardView)[https://developer.android.com/reference/android/support/v7/widget/CardView.html] 
+without other supported things.
  
-###### Useful extensions and bugfixes
+For more information please take a look at original library [https://github.com/ZieIony/Carbon](https://github.com/ZieIony/Carbon)
 
- - html text
- - percent layouts, anchors, colored insets
- - view stroke
- - visibility animations
- - ttf/otf fonts
- - text auto size
- - TextMarker
+## Why this?
 
-##### Material constants, widgets and components
+On pre-Lollipop support's `CardView` doesn't cut its content to outline with rounded corners. There's 
+nothing you can do with it. The implementation is broken and apparently performance is the reason.
+If you really wish to have rounded corners on pre-Lollipop devices, use this fork. 
 
- - colors, dimensions, typography
- - ready-to-use rows and adapters for RecyclerView
- - DropDown, FloatingActionMenu, RangeSeekBar, ExpandableRecyclerView, FlowLayout, TableView
+More about this issue: https://www.reddit.com/r/androiddev/comments/4bqsph/cardview_not_rounded_prelollipop/
 
-### Samples
-![Sample app](https://github.com/ZieIony/Carbon/blob/master/images/sampleapp.png)
-![Buttons / Usage sample](https://github.com/ZieIony/Carbon/blob/master/images/buttonsusage.png)
-![CheckBoxes](https://github.com/ZieIony/Carbon/blob/master/images/checkboxes.png)
-![Colored shadows](https://github.com/ZieIony/Carbon/blob/master/images/coloredshadows.png)
-![Component](https://github.com/ZieIony/Carbon/blob/master/images/component.png)
-![HTML](https://github.com/ZieIony/Carbon/blob/master/images/html.png)
-![PagerTabStrip](https://github.com/ZieIony/Carbon/blob/master/images/pagertabstrip.png)
-![Registration form](https://github.com/ZieIony/Carbon/blob/master/images/registrationform.png)
-![Rounded corners](https://github.com/ZieIony/Carbon/blob/master/images/roundedcorners.png)
-![SeekBar and RangeSeekBar](https://github.com/ZieIony/Carbon/blob/master/images/seekbar.png)
-![Spinner](https://github.com/ZieIony/Carbon/blob/master/images/spinner.png)
-![Table layout](https://github.com/ZieIony/Carbon/blob/master/images/tablelayout.png)
-![Theme](https://github.com/ZieIony/Carbon/blob/master/images/theme.png)
+## Samples
 
-### [Installation](https://github.com/ZieIony/Carbon/wiki/Installation)
+```xml
+    <carbon.widget.FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/carbon_grey_500"
+        app:carbon_cornerRadius="8dp"
+        app:carbon_elevation="@dimen/carbon_elevationCard">
 
-### [FAQ](https://github.com/ZieIony/Carbon/wiki/FAQ)
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-### [Changelog](https://github.com/ZieIony/Carbon/wiki/Changelog)
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop" />
 
-### [JavaDoc](http://zieiony.github.io/Carbon/javadoc/)
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/carbon_padding"
+                android:paddingRight="@dimen/carbon_padding"
+                android:text="Card with rounded content" />
 
-### License
+        </LinearLayout>
+
+    </carbon.widget.FrameLayout>
+
+```
+
+![Rounded corners](https://github.com/luongvo/Carbon-FrameLayout/blob/master/images/roundedcorners.png)
+
+## Installation
+
+Step 1. Add the JitPack repository to your build file
+
+Add it in your root build.gradle at the end of repositories:
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+Step 2. Add the dependency
+```
+	dependencies {
+	        compile 'com.github.luongvo:Carbon-FrameLayout:[LATEST_VERSION]'
+	}
+```
+
+### ProGuard
+
+```
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keep class android.support.v8.renderscript.** { *; }
+```
+
+## License
 ```
 Copyright 2015 Marcin Korniluk 'Zielony'
 
