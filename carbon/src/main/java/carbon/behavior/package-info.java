@@ -1,4 +1,0 @@
-/**
- * Behaviors.
- */
-package carbon.behavior;

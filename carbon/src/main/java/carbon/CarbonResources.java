@@ -29,7 +29,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import carbon.drawable.VectorDrawable;
 import carbon.drawable.ripple.LollipopDrawable;
 import carbon.drawable.ripple.RippleDrawableICS;
 
@@ -192,23 +191,15 @@ public class CarbonResources extends Resources {
     }
 
     public Drawable getDrawable(int resId, Resources.Theme theme) {
-        if (resId != 0 && getResourceTypeName(resId).equals("raw")) {
-            return new VectorDrawable(this, resId);
-        } else {
             TypedValue value = new TypedValue();
             getValue(resId, value, true);
             return loadDrawable(value, theme);
-        }
     }
 
     public Drawable getDrawable(int resId) {
-        if (resId != 0 && getResourceTypeName(resId).equals("raw")) {
-            return new VectorDrawable(this, resId);
-        } else {
             TypedValue value = new TypedValue();
             getValue(resId, value, true);
             return loadDrawable(value, null);
-        }
     }
 
 
@@ -384,21 +375,13 @@ public class CarbonResources extends Resources {
     @Nullable
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Drawable getDrawableForDensity(int resId, int density, Theme theme) {
-        if (resId != 0 && getResourceTypeName(resId).equals("raw")) {
-            return new VectorDrawable(this, resId);
-        } else {
             return super.getDrawableForDensity(resId, density, theme);
-        }
     }
 
     @Nullable
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Drawable getDrawableForDensity(int resId, int density) throws NotFoundException {
-        if (resId != 0 && getResourceTypeName(resId).equals("raw")) {
-            return new VectorDrawable(this, resId);
-        } else {
             return super.getDrawableForDensity(resId, density);
-        }
     }
 
 }

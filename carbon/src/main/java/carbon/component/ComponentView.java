@@ -37,16 +37,11 @@ public class ComponentView<Type extends Component> extends FrameLayout {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ComponentView, 0, 0);
         if (a != null) {
             int id = a.getResourceId(R.styleable.ComponentView_carbon_id, 0);
-            int layout = a.getResourceId(R.styleable.ComponentView_carbon_layout, 0);
             String type = a.getString(R.styleable.ComponentView_carbon_type);
             try {
                 Component component;
-                if (layout != 0 && type == null) {
-                    component = new DataBindingComponent(this, layout);
-                } else {
-                    Constructor<?> constructor = Class.forName(type).getConstructor(ViewGroup.class);
-                    component = (Component) constructor.newInstance(this);
-                }
+                Constructor<?> constructor = Class.forName(type).getConstructor(ViewGroup.class);
+                component = (Component) constructor.newInstance(this);
                 View view = component.getView();
                 view.setTag(component);
                 view.setId(id);

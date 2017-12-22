@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-// apply from: 'maven-push.gradle'
 
 ext {
     supportLibVersion = '27.0.2'
@@ -9,9 +8,6 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.0'
 
-    dataBinding {
-        enabled = true
-    }
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
@@ -36,14 +32,8 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.android.databinding:compiler:3.0.1'
     compile("com.android.support:appcompat-v7:$supportLibVersion") {
         force = true
     }
-    implementation "com.android.support:gridlayout-v7:$supportLibVersion"
-    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
-    implementation "com.android.support:design:$supportLibVersion"
-    implementation 'de.greenrobot:androidsvg:1.2.2-beta-1-tweaked-2'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.annimon:stream:1.1.9'
 }
